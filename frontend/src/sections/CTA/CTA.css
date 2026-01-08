@@ -1,0 +1,121 @@
+.cta-section {
+    background-color: var(--primary-color);
+    padding: 100px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: white;
+  }
+  
+  .cta-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .cta-badge {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 25px;
+    opacity: 0.9;
+  }
+  
+  .cta-heading {
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    line-height: 1.2;
+    font-weight: 700;
+    margin-bottom: 40px;
+  }
+  
+  .cta-btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .btn-filled {
+    background-color: white;
+    color: var(--dark);
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+  }
+  
+  .btn-filled:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+  }
+  
+  .btn-outlined {
+    background-color: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-outlined:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: white;
+    transform: translateY(-2px);
+  }
+  
+  .cta-bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  .shape-left, .shape-right {
+    position: absolute;
+    bottom: -20%;
+    width: 50%;
+    height: 120%;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.15), transparent);
+    border-radius: 50% 50% 0 0;
+  }
+  
+  .shape-left {
+    left: -10%;
+    transform: rotate(15deg);
+  }
+  
+  .shape-right {
+    right: -10%;
+    transform: rotate(-15deg);
+  }
+  
+  @media (max-width: 600px) {
+    .cta-section {
+      padding: 80px 20px;
+    }
+    
+    .cta-btn-group {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .btn-filled, .btn-outlined {
+      width: 100%;
+      max-width: 300px;
+    }
+  
+    .cta-heading br {
+      display: none;
+    }
+  }
