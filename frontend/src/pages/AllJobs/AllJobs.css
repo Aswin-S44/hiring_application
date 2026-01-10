@@ -1,0 +1,178 @@
+.all-jobs-wrapper {
+    padding: 2rem;
+    background-color: #f9fafb;
+    min-height: 100vh;
+  }
+  
+  .jobs-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+  }
+  
+  .header-text h1 {
+    color: var(--dark);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .header-text p {
+    color: var(--slate);
+    margin-top: 0.4rem;
+  }
+  
+  .add-job-btn {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  
+  .add-job-btn:hover {
+    opacity: 0.9;
+  }
+  
+  .table-container {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .custom-jobs-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+  
+  .custom-jobs-table th {
+    background-color: #f8fafc;
+    padding: 1rem 1.5rem;
+    color: var(--slate);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .custom-jobs-table td {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  
+  .job-primary-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .job-name {
+    color: var(--dark);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  
+  .job-sub-info {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--slate);
+    font-size: 0.8rem;
+  }
+  
+  .config-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  
+  .badge-outline {
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    width: fit-content;
+    color: var(--primary-color);
+    font-weight: 500;
+  }
+  
+  .work-mode-text {
+    font-size: 0.8rem;
+    color: var(--slate);
+  }
+  
+  .exp-text, .salary-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  .status-pill-ui {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .status-pill-ui.open {
+    background-color: #dcfce7;
+    color: var(--secondary-color);
+  }
+  
+  .status-pill-ui.draft {
+    background-color: #f1f5f9;
+    color: var(--slate);
+  }
+  
+  .management-actions {
+    display: flex;
+    gap: 0.6rem;
+  }
+  
+  .ui-icon-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--slate);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .ui-icon-btn.view:hover { color: var(--primary-color); border-color: var(--primary-color); }
+  .ui-icon-btn.edit:hover { color: #0ea5e9; border-color: #0ea5e9; }
+  .ui-icon-btn.candidates:hover { color: var(--secondary-color); border-color: var(--secondary-color); }
+  .ui-icon-btn.delete:hover { color: #ef4444; border-color: #ef4444; }
+  
+  .empty-state {
+    text-align: center;
+    padding: 4rem !important;
+    color: var(--slate);
+    font-style: italic;
+  }
+  
+  .jobs-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    color: var(--primary-color);
+    font-weight: 600;
+  }

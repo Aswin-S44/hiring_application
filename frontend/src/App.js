@@ -8,6 +8,8 @@ import JobDetails from "./pages/JobDetails/JobDetails";
 import CandidateProfile from "./pages/CandidateProfile/CandidateProfile";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import SignUpPage from "./pages/SignUpPage/SignUpPage";
+import CompanyDashboard from "./pages/CompanyDashboard/CompanyDashboard";
+import { AuthProvider } from "./context/AuthContext";
 
 function AppContent() {
   const location = useLocation();
@@ -23,6 +25,7 @@ function AppContent() {
         <Route path="/candidate/profile" element={<CandidateProfile />} />
         <Route path="/signin" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/company/dashboard" element={<CompanyDashboard />} />
       </Routes>
       {!hideHeaderFooter && <Footer />}
     </div>
@@ -32,7 +35,9 @@ function AppContent() {
 function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

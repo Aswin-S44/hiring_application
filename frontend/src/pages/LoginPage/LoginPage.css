@@ -1,5 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
+:root {
+  --primary-color: #304b66;
+  --secondary-color: #7f56d9;
+  --white: #ffffff;
+  --border: #eaecf0;
+  --text-color: #101828;
+  --slate: #667085;
+  --dark: #344054;
+  --border-radius: 12px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -136,6 +147,11 @@
   transform: translateY(-1px);
 }
 
+.btn-primary-auth:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .btn-google {
   width: 100%;
   background: var(--white);
@@ -200,7 +216,7 @@
 }
 
 .stars {
-  color: var(--secondary-color);
+  color: #fdb022;
   margin-bottom: 20px;
   letter-spacing: 2px;
 }
