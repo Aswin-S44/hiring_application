@@ -4,7 +4,7 @@ import baseUrl from "../../contants/baseUrl";
 import { useAuth } from "../../context/AuthContext";
 import { Eye, Edit, Trash2, Users, MapPin, Briefcase } from "lucide-react";
 
-function AllJobs() {
+function AllJobs({ onAction }) {
   const { profile } = useAuth();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,15 +36,7 @@ function AllJobs() {
     fetchJobs();
   }, [profile]);
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
-  if (loading) return <div className="jobs-loading">Loading Dashboard...</div>;
+  if (loading) return <div className="jobs-loading">Loading Jobs...</div>;
 
   return (
     <div className="all-jobs-wrapper">
@@ -53,7 +45,9 @@ function AllJobs() {
           <h1>Job Postings</h1>
           <p>Manage and track your active recruitment listings</p>
         </div>
-        <button className="add-job-btn">Create New Job</button>
+        <button className="add-job-btn" onClick={() => onAction("Add_Job")}>
+          Create New Job
+        </button>
       </div>
 
       <div className="table-container">
@@ -108,19 +102,36 @@ function AllJobs() {
                   </td>
                   <td>
                     <div className="management-actions">
-                      <button className="ui-icon-btn view" title="View Details">
+                      <button
+                        className="ui-icon-btn view"
+                        title="View Details"
+                        onClick={() => onAction("View_Job", job._id)}
+                      >
                         <Eye size={18} />
                       </button>
-                      <button className="ui-icon-btn edit" title="Edit Job">
+                      <button
+                        className="ui-icon-btn edit"
+                        title="Edit Job"
+                        onClick={() => onAction("Edit_Job", job._id)}
+                      >
                         <Edit size={18} />
                       </button>
                       <button
                         className="ui-icon-btn candidates"
                         title="View Candidates"
+                        onClick={() => onAction("Job_Candidates", job._id)}
                       >
                         <Users size={18} />
                       </button>
-                      <button className="ui-icon-btn delete" title="Remove">
+                      <button
+                        className="ui-icon-btn delete"
+                        title="Remove"
+                        onClick={() => {
+                          if (window.confirm("Are you sure?")) {
+                            console.log("Delete", job._id);
+                          }
+                        }}
+                      >
                         <Trash2 size={18} />
                       </button>
                     </div>

@@ -17,6 +17,7 @@ import {
 import "./CompanyDashboard.css";
 import AddJob from "../AddJob/AddJob";
 import AllJobs from "../AllJobs/AllJobs";
+import JobDetailsByCompany from "../JobDetailsByCompany/JobDetailsByCompany";
 
 const HomeView = () => (
   <div className="view-fade-in">
@@ -97,15 +98,6 @@ const HomeView = () => (
   </div>
 );
 
-const JobsView = () => (
-  <div className="view-fade-in">
-    <div className="view-title-row">
-      <h2>Active Job Listings</h2>
-    </div>
-    <AllJobs />
-  </div>
-);
-
 const CandidatesView = () => (
   <div className="view-fade-in">
     <div className="view-title-row">
@@ -155,6 +147,7 @@ const CandidatesView = () => (
 function CompanyDashboard() {
   const [activeTab, setActiveTab] = useState("Home");
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState(null);
 
   const menuItems = [
     { id: "Home", icon: <Home size={20} /> },
@@ -163,7 +156,11 @@ function CompanyDashboard() {
     { id: "Settings", icon: <Settings size={20} /> },
   ];
 
-  const subMenus = [{ id: "Add_Job" }];
+  const navigateTo = (tab, jobId = null) => {
+    setActiveTab(tab);
+    setSelectedJobId(jobId);
+    setSidebarOpen(false);
+  };
 
   return (
     <div className="dashboard-layout">
@@ -183,10 +180,7 @@ function CompanyDashboard() {
             <button
               key={item.id}
               className={`side-link ${activeTab === item.id ? "active" : ""}`}
-              onClick={() => {
-                setActiveTab(item.id);
-                setSidebarOpen(false);
-              }}
+              onClick={() => navigateTo(item.id)}
             >
               {item.icon}
               <span>{item.id}</span>
@@ -230,9 +224,7 @@ function CompanyDashboard() {
             <div className="vertical-divider"></div>
             <button
               className="post-job-btn-top"
-              onClick={() => {
-                setActiveTab("Add_Job");
-              }}
+              onClick={() => navigateTo("Add_Job")}
             >
               Post Job
             </button>
@@ -241,18 +233,50 @@ function CompanyDashboard() {
 
         <section className="view-content">
           {activeTab === "Home" && <HomeView />}
-          {activeTab === "All Jobs" && <JobsView />}
+
+          {activeTab === "All Jobs" && (
+            <div className="view-fade-in">
+              <div className="view-title-row">
+                <h2>Active Job Listings</h2>
+              </div>
+              <AllJobs onAction={navigateTo} />
+            </div>
+          )}
+
           {activeTab === "Candidates" && <CandidatesView />}
+
           {activeTab === "Settings" && (
             <div className="view-fade-in">
               <h2>Settings Page</h2>
               <p>Configuration options here.</p>
             </div>
           )}
-          {activeTab === "Add_Job" && (
-            <>
-              <AddJob />
-            </>
+
+          {activeTab === "Add_Job" && <AddJob />}
+
+          {activeTab === "View_Job" && (
+            <div className="view-fade-in">
+              <button onClick={() => setActiveTab("All Jobs")}>Back</button>
+              <h2>Job Details</h2>
+
+              <JobDetailsByCompany jobId={selectedJobId} />
+            </div>
+          )}
+
+          {activeTab === "Edit_Job" && (
+            <div className="view-fade-in">
+              <button onClick={() => setActiveTab("All Jobs")}>Back</button>
+              <h2>Edit Job</h2>
+              <p>Editing Job ID: {selectedJobId}</p>
+            </div>
+          )}
+
+          {activeTab === "Job_Candidates" && (
+            <div className="view-fade-in">
+              <button onClick={() => setActiveTab("All Jobs")}>Back</button>
+              <h2>Applicants for Job</h2>
+              <p>List of candidates for Job ID: {selectedJobId}</p>
+            </div>
           )}
         </section>
       </main>
