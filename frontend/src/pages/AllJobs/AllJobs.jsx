@@ -38,6 +38,19 @@ function AllJobs({ onAction }) {
 
   if (loading) return <div className="jobs-loading">Loading Jobs...</div>;
 
+  const handleDeleteJob = async (jobId) => {
+    try {
+      const response = await fetch(`${baseUrl}/api/v1/company/job/${jobId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.log("Error while deleting job : ", error);
+    }
+  };
+
   return (
     <div className="all-jobs-wrapper">
       <div className="jobs-page-header">
@@ -127,9 +140,7 @@ function AllJobs({ onAction }) {
                         className="ui-icon-btn delete"
                         title="Remove"
                         onClick={() => {
-                          if (window.confirm("Are you sure?")) {
-                            console.log("Delete", job._id);
-                          }
+                          handleDeleteJob(job._id);
                         }}
                       >
                         <Trash2 size={18} />

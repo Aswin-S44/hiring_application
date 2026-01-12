@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AddJob.css";
 import baseUrl from "../../contants/baseUrl";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from "../../context/AuthContext";
 
-function AddJob() {
-  const { user, loading, logout, profile } = useAuth();
-
-  console.log("USER-----------", user ? user : "no user");
-  console.log("PROFILE---------", profile);
+function AddJob({ jobId, onComplete }) {
+  const { profile } = useAuth();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -22,18 +21,60 @@ function AddJob() {
     totalOpenings: 1,
     status: "Open",
     expiresAt: "",
-    company: "", // Usually passed from context or a selection
   });
 
-  // States for dynamic array inputs
   const [skillInput, setSkillInput] = useState("");
   const [skills, setSkills] = useState([]);
   const [respInput, setRespInput] = useState("");
   const [responsibilities, setResponsibilities] = useState([]);
   const [reqInput, setReqInput] = useState("");
   const [requirements, setRequirements] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (jobId) {
+      const fetchJobDetails = async () => {
+        try {
+          const response = await fetch(
+            `${baseUrl}/api/v1/company/job/${jobId}`
+          );
+          const data = await response.json();
+          if (data.success && data.job) {
+            const job = data.job;
+            setFormData({
+              title: job.title || "",
+              description: job.description || "",
+              jobType: job.jobType || "Full-time",
+              workMode: job.workMode || "Onsite",
+              location: {
+                city: job.location?.city || "",
+                state: job.location?.state || "",
+                country: job.location?.country || "",
+              },
+              salary: {
+                min: job.salary?.min || "",
+                max: job.salary?.max || "",
+                currency: job.salary?.currency || "INR",
+                isNegotiable: job.salary?.isNegotiable || false,
+              },
+              experience: {
+                min: job.experience?.min || "",
+                max: job.experience?.max || "",
+              },
+              totalOpenings: job.totalOpenings || 1,
+              status: job.status || "Open",
+              expiresAt: job.expiresAt ? job.expiresAt.split("T")[0] : "",
+            });
+            setSkills(job.skills || []);
+            setResponsibilities(job.responsibilities || []);
+            setRequirements(job.requirements || []);
+          }
+        } catch (error) {
+          console.error("Error fetching job:", error);
+        }
+      };
+      fetchJobDetails();
+    }
+  }, [jobId]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -64,20 +105,25 @@ function AddJob() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const finalData = {
       ...formData,
       skills,
       responsibilities,
       requirements,
-      company: profile?._id,
+      company: profile?._id, 
     };
-    console.log("Job Submitted:", finalData);
+
+    const url = jobId
+      ? `${baseUrl}/api/v1/company/job/${jobId}`
+      : `${baseUrl}/api/v1/company/job`;
+
+    const method = jobId ? "PUT" : "POST";
+
     try {
-      const response = await fetch(`${baseUrl}/api/v1/company/job`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalData),
       });
 
@@ -86,32 +132,29 @@ function AddJob() {
       if (data.success) {
         Swal.fire({
           icon: "success",
-          title: "Job Posted",
-          text: "Succesfully addded your Job",
+          title: jobId ? "Job Updated" : "Job Posted",
+          text: data.message || "Operation successful",
           showConfirmButton: false,
           timer: 2000,
-          background: "#ffffff",
-          color: "#101828",
-          iconColor: "#304b66",
         });
 
-        setTimeout(() => {
-          navigate("/jobs");
-        }, 2000);
+        if (onComplete) {
+          onComplete();
+        } else {
+          setTimeout(() => navigate("/jobs"), 2000);
+        }
       } else {
         Swal.fire({
           icon: "error",
-          title: "Adding job Failed",
-          text: data.message || "Error while adding job.",
-          confirmButtonColor: "#304b66",
+          title: "Failed",
+          text: data.message || "Error processing request",
         });
       }
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Something went wrong. Please try again later.",
-        confirmButtonColor: "#304b66",
+        text: "Something went wrong.",
       });
     } finally {
       setIsLoading(false);
@@ -121,14 +164,14 @@ function AddJob() {
   return (
     <div className="add-job-container">
       <form className="job-form" onSubmit={handleSubmit}>
-        <h2 className="form-title">Post a New Job</h2>
+        <h2 className="form-title">{jobId ? "Edit Job" : "Post a New Job"}</h2>
 
-        {/* Basic Info */}
         <div className="form-section">
           <label>Job Title</label>
           <input
             type="text"
             name="title"
+            value={formData.title}
             placeholder="e.g. Senior Frontend Developer"
             required
             onChange={handleChange}
@@ -137,7 +180,11 @@ function AddJob() {
           <div className="row">
             <div className="col">
               <label>Job Type</label>
-              <select name="jobType" onChange={handleChange}>
+              <select
+                name="jobType"
+                value={formData.jobType}
+                onChange={handleChange}
+              >
                 {[
                   "Full-time",
                   "Part-time",
@@ -153,7 +200,11 @@ function AddJob() {
             </div>
             <div className="col">
               <label>Work Mode</label>
-              <select name="workMode" onChange={handleChange}>
+              <select
+                name="workMode"
+                value={formData.workMode}
+                onChange={handleChange}
+              >
                 {["Onsite", "Remote", "Hybrid"].map((mode) => (
                   <option key={mode} value={mode}>
                     {mode}
@@ -164,44 +215,45 @@ function AddJob() {
           </div>
         </div>
 
-        {/* Description */}
         <div className="form-section">
           <label>Description</label>
           <textarea
             name="description"
             rows="4"
+            value={formData.description}
             placeholder="Describe the role..."
             required
             onChange={handleChange}
           ></textarea>
         </div>
 
-        {/* Location */}
         <div className="form-section">
           <label>Location</label>
           <div className="row-three">
             <input
               type="text"
               name="location.city"
+              value={formData.location.city}
               placeholder="City"
               onChange={handleChange}
             />
             <input
               type="text"
               name="location.state"
+              value={formData.location.state}
               placeholder="State"
               onChange={handleChange}
             />
             <input
               type="text"
               name="location.country"
+              value={formData.location.country}
               placeholder="Country"
               onChange={handleChange}
             />
           </div>
         </div>
 
-        {/* Experience & Salary */}
         <div className="form-section">
           <div className="row">
             <div className="col">
@@ -210,6 +262,7 @@ function AddJob() {
                 <input
                   type="number"
                   name="experience.min"
+                  value={formData.experience.min}
                   placeholder="Min"
                   required
                   onChange={handleChange}
@@ -217,6 +270,7 @@ function AddJob() {
                 <input
                   type="number"
                   name="experience.max"
+                  value={formData.experience.max}
                   placeholder="Max"
                   onChange={handleChange}
                 />
@@ -228,12 +282,14 @@ function AddJob() {
                 <input
                   type="number"
                   name="salary.min"
+                  value={formData.salary.min}
                   placeholder="Min"
                   onChange={handleChange}
                 />
                 <input
                   type="number"
                   name="salary.max"
+                  value={formData.salary.max}
                   placeholder="Max"
                   onChange={handleChange}
                 />
@@ -242,7 +298,6 @@ function AddJob() {
           </div>
         </div>
 
-        {/* Dynamic Skills */}
         <div className="form-section">
           <label>Skills Required</label>
           <div className="dynamic-input">
@@ -250,7 +305,7 @@ function AddJob() {
               type="text"
               value={skillInput}
               onChange={(e) => setSkillInput(e.target.value)}
-              placeholder="Add a skill and press Add"
+              placeholder="Add skill"
             />
             <button
               type="button"
@@ -271,7 +326,6 @@ function AddJob() {
           </div>
         </div>
 
-        {/* Responsibilities */}
         <div className="form-section">
           <label>Responsibilities</label>
           <div className="dynamic-input">
@@ -311,7 +365,6 @@ function AddJob() {
           </ul>
         </div>
 
-        {/* Meta info */}
         <div className="form-section">
           <div className="row-three">
             <div className="col">
@@ -319,17 +372,26 @@ function AddJob() {
               <input
                 type="number"
                 name="totalOpenings"
-                defaultValue="1"
+                value={formData.totalOpenings}
                 onChange={handleChange}
               />
             </div>
             <div className="col">
               <label>Expiry Date</label>
-              <input type="date" name="expiresAt" onChange={handleChange} />
+              <input
+                type="date"
+                name="expiresAt"
+                value={formData.expiresAt}
+                onChange={handleChange}
+              />
             </div>
             <div className="col">
               <label>Status</label>
-              <select name="status" onChange={handleChange}>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+              >
                 <option value="Open">Open</option>
                 <option value="Draft">Draft</option>
                 <option value="Closed">Closed</option>
@@ -338,8 +400,8 @@ function AddJob() {
           </div>
         </div>
 
-        <button type="submit" className="submit-btn">
-          Post Job
+        <button type="submit" className="submit-btn" disabled={isLoading}>
+          {isLoading ? "Processing..." : jobId ? "Update Job" : "Post Job"}
         </button>
       </form>
     </div>

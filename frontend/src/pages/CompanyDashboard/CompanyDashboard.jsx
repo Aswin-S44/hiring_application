@@ -162,6 +162,12 @@ function CompanyDashboard() {
     setSidebarOpen(false);
   };
 
+  const handleUpdateSuccess = () => {
+    setActiveTab("All Jobs");
+    setSelectedJobId(null);
+    console.log('11111111111')
+  };
+
   return (
     <div className="dashboard-layout">
       <div
@@ -252,28 +258,43 @@ function CompanyDashboard() {
             </div>
           )}
 
-          {activeTab === "Add_Job" && <AddJob />}
+          {activeTab === "Add_Job" && (
+            <AddJob onComplete={() => setActiveTab("All Jobs")} />
+          )}
 
           {activeTab === "View_Job" && (
             <div className="view-fade-in">
-              <button onClick={() => setActiveTab("All Jobs")}>Back</button>
+              <button
+                className="text-btn"
+                onClick={() => setActiveTab("All Jobs")}
+              >
+                Back
+              </button>
               <h2>Job Details</h2>
-
               <JobDetailsByCompany jobId={selectedJobId} />
             </div>
           )}
 
           {activeTab === "Edit_Job" && (
             <div className="view-fade-in">
-              <button onClick={() => setActiveTab("All Jobs")}>Back</button>
-              <h2>Edit Job</h2>
-              <p>Editing Job ID: {selectedJobId}</p>
+              <button
+                className="text-btn"
+                onClick={() => setActiveTab("All Jobs")}
+              >
+                Back
+              </button>
+              <AddJob jobId={selectedJobId} onComplete={handleUpdateSuccess} />
             </div>
           )}
 
           {activeTab === "Job_Candidates" && (
             <div className="view-fade-in">
-              <button onClick={() => setActiveTab("All Jobs")}>Back</button>
+              <button
+                className="text-btn"
+                onClick={() => setActiveTab("All Jobs")}
+              >
+                Back
+              </button>
               <h2>Applicants for Job</h2>
               <p>List of candidates for Job ID: {selectedJobId}</p>
             </div>
